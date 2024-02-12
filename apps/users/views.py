@@ -57,3 +57,16 @@ class ProfileAPIView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = ProfileSerializer(instance)
         return Response(serializer.data)
+    
+class UpdateProfileAPIView(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user.id
+        profile = Profile.objects.get(id=user)
+        return profile
+
+    def perform_update(self, serializer):
+        serializer.save()
+        return Response(serializer.data)
