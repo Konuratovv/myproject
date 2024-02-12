@@ -41,6 +41,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'first_name',
             'last_name',
-            'description',
+            'desription',
             'city',
         ]

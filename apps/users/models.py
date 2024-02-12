@@ -23,5 +23,5 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Profile(CustomUser):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    desription = models.TextField()
-    city = models.CharField(max_length=150)
+    desription = models.TextField(null=True, blank=True)
+    city = models.CharField(max_length=150, null=True, blank=True)

@@ -4,11 +4,13 @@ from rest_framework import generics
 from apps.users.models import Profile
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from apps.users.serializers import LoginSerializer, RegisterSerializer
+from apps.users.serializers import LoginSerializer, ProfileSerializer, RegisterSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
     
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
@@ -26,6 +28,8 @@ class RegisterAPIView(generics.CreateAPIView):
     
 class LoginAPIView(generics.CreateAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+
 
     def post(self, request, *args, **kwargs):
         user = Profile.objects.filter(email=self.request.data['email']).first()
@@ -39,3 +43,17 @@ class LoginAPIView(generics.CreateAPIView):
         refresh_token = RefreshToken.for_user(user)
 
         return Response({'access_token': str(access_token), 'refresh_token': str(refresh_token)})
+    
+class ProfileAPIView(generics.RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user.id
+        profile = Profile.objects.get(id=user)
+        return profile
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = ProfileSerializer(instance)
+        return Response(serializer.data)
