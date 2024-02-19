@@ -13,6 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
+    code = models.CharField(max_length = 9, blank=True, null=True)
 
     objects = CustomUserManager()
 
@@ -25,3 +26,10 @@ class Profile(CustomUser):
     last_name = models.CharField(max_length=150)
     desription = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=150, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
+    def __str__(self) -> str:
+        return f'{self.first_name}'
