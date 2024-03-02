@@ -1,15 +1,21 @@
 from rest_framework import generics
-from apps.webapp.models import Post
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from apps.webapp.models import Post
 from apps.webapp.serializers import DetailPostSerializer, PostSerializer
 # Create your views here.
 
-class PostAPIView(generics.ListAPIView):
-    serializer_class = PostSerializer
-    queryset = Post.objects.select_related('author').all()
-    permission_classes = [IsAuthenticated]
+@api_view(['GET'])
+def posts_api_view(request):
+    posts = Post.objects.prefetch_related('tags').select_related('author').all()
+    serializer = PostSerializer(posts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-class PostDetailAPIView(generics.RetrieveAPIView):
-    serializer_class = DetailPostSerializer
-    queryset = Post.objects.select_related('author').all()
-    permission_classes = [IsAuthenticated]
+@api_view(['GET'])
+def post_detail_api_view(request, pk):
+    post = Post.objects.get(id=pk)
+    serializer = DetailPostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+

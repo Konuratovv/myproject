@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, mixins
 from apps.users.models import Profile
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
@@ -52,7 +52,7 @@ class LoginAPIView(generics.CreateAPIView):
 
         return Response({'access_token': str(access_token), 'refresh_token': str(refresh_token)})
     
-class EmailVerificationAPIView(generics.UpdateAPIView):
+class EmailVerificationAPIView(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = [AllowAny]
 

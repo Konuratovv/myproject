@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from apps.webapp.views import PostAPIView, PostDetailAPIView
+from apps.webapp.views import post_detail_api_view, posts_api_view
 
 urlpatterns = [
-    path('posts/', PostAPIView.as_view()),
-    path('detailed-post/<int:pk>/', PostDetailAPIView.as_view()),
+    path('posts/', posts_api_view),
+    path('posts/<int:pk>/', post_detail_api_view),
 
 ]

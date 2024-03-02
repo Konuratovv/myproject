@@ -37,6 +37,7 @@ class PostSerializer(serializers.ModelSerializer):
             'author',
             'description',
             'date',
+            'tags',
         ]
 
 class DetailPostSerializer(serializers.ModelSerializer):
