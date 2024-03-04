@@ -19,3 +19,5 @@ def post_detail_api_view(request, pk):
     serializer = DetailPostSerializer(post)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+# @api_view(['POST'])
+

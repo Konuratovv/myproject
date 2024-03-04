@@ -1,10 +1,11 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics, mixins
-from apps.users.models import Profile
+from django.core.exceptions import ObjectDoesNotExist
+from apps.users.models import Profile, FollowUser
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from apps.users.serializers import EmailVerificationSerializer, LoginSerializer, ProfileSerializer, RegisterSerializer
+from apps.users.serializers import EmailVerificationSerializer, FollowUserSerializer, LoginSerializer, ProfileSerializer, RegisterSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from apps.users.utils import send_verification_email
@@ -94,3 +95,46 @@ class UpdateProfileAPIView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         serializer.save()
         return Response(serializer.data)
+    
+class FollowUserAPIView(generics.CreateAPIView):
+    serializer_class = FollowUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = Profile.objects.get(id=self.request.user.id)
+        try:
+            follow = Profile.objects.get(id=self.request.data.get('following'))
+        except ObjectDoesNotExist:
+            return Response({'status': 'user not found!'})
+        
+        try:
+            FollowUser.objects.get(following=user,
+                                   follower=follow)
+            return Response({'status': f'You already followed'})
+        except ObjectDoesNotExist:
+            follow_user = FollowUser.objects.create(following=user,
+                                    follower=follow)
+            user.followers_count += 1
+            user.save()
+            follow_user.save()
+        return Response({'status': f'success{user.followers_count}'})
+    
+class UnfollowUserAPIView(generics.DestroyAPIView):
+    serializer_class = FollowUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = Profile.objects.get(id=self.request.user.id)
+        try:
+            follow = Profile.objects.get(id=self.request.data.get('following'))
+        except ObjectDoesNotExist:
+            return Response({'status': 'user not found!'})
+        try:
+            unfollow_user = FollowUser.objects.get(following=user,
+                                   follower=follow)
+            unfollow_user.delete()
+            user.followers_count -= 1
+            user.save()
+            return Response({'status': f'success{user.followers_count}'})
+        except ObjectDoesNotExist:
+            return Response({'status': 'user is not followed'})

@@ -26,6 +26,7 @@ class Profile(CustomUser):
     last_name = models.CharField(max_length=150)
     desription = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=150, null=True, blank=True)
+    followers_count = models.PositiveIntegerField(default=0, blank=True)
 
     class Meta:
         verbose_name = 'Профиль'
@@ -33,3 +34,8 @@ class Profile(CustomUser):
 
     def __str__(self) -> str:
         return f'{self.first_name}'
+    
+class FollowUser(models.Model):
+    following = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='following')
+    follower = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='followers')
+    date = models.DateTimeField(auto_now_add=True)
