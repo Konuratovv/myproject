@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from apps.users.serializers import EmailVerificationSerializer, FollowUserSerializer, LoginSerializer, ProfileSerializer, RegisterSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from apps.users.utils import send_verification_email
+from apps.users.tasks import send_verification_email
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -26,7 +26,7 @@ class RegisterAPIView(generics.CreateAPIView):
                 password = serializer.validated_data['password']
             )
 
-            send_verification_email(user.email)
+            send_verification_email.delay(user.email)
 
             return Response({'status': 'success'})
         return Response({'status':'error'})
@@ -45,7 +45,7 @@ class LoginAPIView(generics.CreateAPIView):
             raise AuthenticationFailed('Incorrect password')
         
         if not user.is_verified:
-            send_verification_email(user.email)
+            send_verification_email.delay(user.email)
             return Response({'status': 'This user is not valid!'})
         
         access_token = AccessToken.for_user(user)

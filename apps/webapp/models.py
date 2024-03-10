@@ -17,6 +17,7 @@ class Tag(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=150)
+    post_image = models.ImageField(upload_to='posts', verbose_name='Картинка')
     description = models.TextField()
     tags = models.ManyToManyField(Tag, related_name='post')
     date = models.DateTimeField(auto_now_add=True)

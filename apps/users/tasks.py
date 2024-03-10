@@ -2,7 +2,9 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from apps.users.models import CustomUser
 from django.conf import settings
+from celery import shared_task
 
+@shared_task
 def send_verification_email(email):
     generated_code = get_random_string(length=6, allowed_chars='0123456789')
     user = CustomUser.objects.get(email=email)

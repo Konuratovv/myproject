@@ -12,6 +12,8 @@ for app in apps:
             os.remove(migration_file)
 if sql_file:
     os.remove(sql_file)
+else:
+    pass
 
 # Profile.objects.all().delete()
 # CustomUser.objects.all().delete()
