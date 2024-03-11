@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import os
+from celery.schedules import crontab
 
 from celery import Celery
 
@@ -10,4 +11,11 @@ app = Celery('core',
              backend='redis://localhost:6379/0')
 
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    'every':{
+        'task': 'apps.users.tasks.spam_email',
+        'schedule': 15.0
+    }
+}
 

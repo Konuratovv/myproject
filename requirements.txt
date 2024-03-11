@@ -7,13 +7,16 @@ click==8.1.7
 click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
+cron-descriptor==1.4.3
 Django==4.2
 django-4-jet @ https://github.com/Barukimang/django-jet/archive/dev.zip#sha256=73bfdc1ee258ae78c2a1149bea889de8d8a70b1b5807c769c5277f1b40bab499
+django-celery-beat==2.6.0
 django-cors-headers==4.3.1
 django-debug-toolbar==4.3.0
 django-filter==23.5
 django-grappelli==3.0.8
 django-jazzmin==2.6.0
+django-timezone-field==6.1.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 gunicorn==21.2.0
@@ -23,6 +26,7 @@ pillow==10.2.0
 prompt-toolkit==3.0.43
 psycopg2==2.9.9
 PyJWT==2.8.0
+python-crontab==3.0.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.1

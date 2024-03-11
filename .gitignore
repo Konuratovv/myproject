@@ -94,7 +94,7 @@ coverage.xml
 .python-version
 
 # celery
-celerybeat-schedule.*
+celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
@@ -142,3 +142,7 @@ GitHub.sublime-settings
 
 task.txt
 events_dump.json
+
+#migrations
+migrations/*
+!migrations/__init__.py

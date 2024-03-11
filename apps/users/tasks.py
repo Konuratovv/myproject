@@ -14,3 +14,8 @@ def send_verification_email(email):
     massage = f'Your verification code:\n{generated_code}'
     from_mail = settings.EMAIL_HOST_USER
     send_mail(subject, massage, from_mail, [email])
+
+@shared_task
+def spam_email():
+    from_mail = settings.EMAIL_HOST_USER
+    send_mail(subject='Hhahaha', message='Hello brother!!', from_email=from_mail, recipient_list=['konuratov.chika@gmail.com'])

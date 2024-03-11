@@ -12,7 +12,6 @@ from .tasks import simple_task
 def posts_api_view(request):
     posts = Post.objects.prefetch_related('tags').select_related('author').all()
     serializer = PostSerializer(posts, many=True)
-    simple_task.delay()
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
