@@ -144,5 +144,5 @@ task.txt
 events_dump.json
 
 #migrations
-migrations/*
+migrations
 !migrations/__init__.py
