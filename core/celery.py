@@ -15,7 +15,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'every':{
         'task': 'apps.users.tasks.spam_email',
-        'schedule': 15.0
+        'schedule': 2.0
     }
 }
 

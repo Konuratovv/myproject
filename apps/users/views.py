@@ -30,7 +30,7 @@ class RegisterAPIView(generics.CreateAPIView):
 
             return Response({'status': 'success'})
         return Response({'status':'error'})
-    
+
 class LoginAPIView(generics.CreateAPIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
