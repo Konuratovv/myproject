@@ -22,6 +22,10 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, related_name='post')
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='post')
+    likes = models.ManyToManyField(CustomUser, related_name='post_likes', blank=True)
+    likes_count = models.PositiveIntegerField(default=0, blank=True)
+    views = models.ManyToManyField(CustomUser, related_name='post_views', blank=True)
+    views_count = models.PositiveIntegerField(default=0, blank=True)
 
     def __str__(self) -> str:
         return f'{self.title}'

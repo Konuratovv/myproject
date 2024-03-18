@@ -1,18 +1,26 @@
-from rest_framework.mixins import UpdateModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin
+from rest_framework.mixins import UpdateModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from .permissions import IsAuthorOrReadOnly
 
-class CRUDAPIView(UpdateModelMixin, ListModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
+class CRUDAPIView(UpdateModelMixin, ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet):
     def update(self, request, *args, **kwargs):
-        isntance = self.get_object()
-        serializer = self.get_serializer(isntance, data=request.data)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        if not serializer.data['is_viewed']:
+            instance.views.add(request.user)
+            instance.views_count += 1
+            instance.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -27,14 +35,11 @@ class CRUDAPIView(UpdateModelMixin, ListModelMixin, CreateModelMixin, DestroyMod
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
-        try:
-            instanse = self.get_object()
-            instanse.delete()
-            return Response(status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     def get_permissions(self):
-        if self.request.method == 'PATCH' or self.request.method == "PUT" or self.request.method == "DELETE":
-            return [IsAuthorOrReadOnly]
+        if self.request.method in ['PATCH', 'PUT', 'DELETE']:
+            return [IsAuthorOrReadOnly()]
         return super().get_permissions()
